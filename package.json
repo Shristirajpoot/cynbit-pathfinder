@@ -1,0 +1,12 @@
+{
+  "name": "cynbit-pathfinder",
+  "version": "1.0.0",
+  "description": "BitElevate Path Finder - interactive track recommender prototype for Cynbit",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/scoring.test.js",
+    "start": "npx serve ."
+  },
+  "license": "MIT"
+}
+
