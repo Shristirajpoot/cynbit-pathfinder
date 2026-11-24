@@ -1,56 +1,33 @@
-﻿# BitElevate Path Finder — Technical Report
+﻿# BitElevate Path Finder
 
-**Author:** Shristi Rajpoot · **Task:** Improve Cynbit's Website (Full Stack Developer Intern)
+Interactive track-recommender prototype built for the **Cynbit Technologies — Full Stack Developer Intern** technical assessment.
 
-## 1. Analysis of the existing site (live audit, Nov 2026)
-I audited cynbit.in (home, `/bitelevate`, `/services`, `/careers`, `/contact`, `/blog`) at desktop, tablet and mobile widths.
+## What it solves
+Cynbit's [BitElevate](https://www.cynbit.in/bitelevate) page offers six specialised labs without a comparison tool or recommender, and sends visitors straight to a ₹1,499 Cashfree checkout with no low-commitment step. **BitElevate Path Finder** guides visitors in under a minute to the right lab, shows a match breakdown and 4-step roadmap, generates a shareable result link (`?r=...`), and offers a free mentor callback with transparent pricing before payment.
 
-**Findings on BitElevate (the focus area)**
-- Six labs are offered (Full Stack SaaS, Python Backend, AI & Vector Intelligence, Frontend Ops Dashboard, QA & Test Automation, UI/UX & Design Systems), but there is **no comparison, difficulty guidance, or recommender**. Visitors must guess.
-- The CTA "Claim your sprint spot" leads straight to a **₹1,499 Cashfree payment**; price is not shown earlier and there is **no low-commitment step** (callback, syllabus).
-- Lab naming is inconsistent between tabs, the registration dropdown and testimonials (e.g. "QA & Test Automation Lab" vs "QA & Automation Lab"; "DevOps & Cloud Lab" appears in testimonials only).
-- The syllabus and terminal preview stay backend-focused whatever lab is selected.
+## Technical Report
+Read the full live-site audit, problem statement, architecture decisions, and results in **[REPORT.md](./REPORT.md)**.
 
-**Other observations (out of scope for the prototype, but worth fixing)**
-- `/blog` loaded in ~7.4 s and `/services` timed out on the `load` event; scroll-reveal animations (`opacity: 0`) can leave content invisible.
-- Accessibility: nested `<main>`, `<button>` inside `<a>`, form inputs without bound labels, icon ligature text leaking into accessible names, missing image `alt`, duplicated brand in `<title>`.
-- Mobile floating bottom nav (~108 px) covers hero CTAs on narrow screens.
+## Project Structure
+```text
+├── index.html            # Page shell and semantic landmarks
+├── styles.css            # Dark theme, responsive layout, reduced-motion support
+├── src/
+│   ├── data.js           # Six real BitElevate labs and weighted quiz questions
+│   ├── scoring.js        # Pure match-percentage engine and URL encode/decode
+│   └── app.js            # Quiz flow, accessible UI, share link, callback capture
+├── test/
+│   └── scoring.test.js   # Unit tests covering all 6 labs and edge cases
+└── REPORT.md             # Full technical report and website audit
+```
 
-## 2. Problem statement and proposed improvement
-**Problem:** Choosing among six labs is hard and the only next step is a paid checkout, so unsure visitors leave.
+## Run Locally
+Requires Node.js 18+ (zero external dependencies):
 
-**Improvement:** A 5-question **Path Finder** that recommends one of the six real labs with a match % across all labs, a 4-step roadmap, a shareable result link, and a **free mentor-callback lead capture** shown with transparent pricing before payment.
-
-| Goal | Feature |
-|---|---|
-| Reduce decision friction | Weighted-scoring quiz (<1 min) |
-| Increase conversion | Free callback capture tied to the matched lab, plus price transparency |
-| Virality / retention | Shareable URL (`?r=01234`) that restores the result |
-| Accessibility | Keyboard focus, ARIA progress/status, visible focus states, labelled input |
-
-## 3. Stack choices
-- **Vanilla JS (ES modules), HTML, CSS** — zero build step and zero dependencies; ~6 KB of JS, instant load, deploys to any static host. A prototype this size doesn't justify a framework, and the logic can be dropped into Cynbit's real site as a component.
-- **Pure scoring module** (`src/scoring.js`) separated from the UI so it is unit-tested with Node's built-in `node:test`.
-- **URL-encoded state** instead of a backend for sharing; `localStorage` stands in for the lead API in the demo.
-
-## 4. Implementation
-- `src/data.js` — tracks and questions; each option carries weighted points per track (add/modify content without touching logic).
-- `src/scoring.js` — `score()` normalises each track's points against its maximum possible, giving a 0–100 match; `encode`/`decode` serialise answers and validate untrusted URL input.
-- `src/app.js` — view rendering (intro → question → result), HTML escaping, email validation, clipboard sharing.
-- Tests (`test/scoring.test.js`): ranking correctness, bounds, and `encode`/`decode` round-trip and invalid input.
-
-## 5. Results
-- 8/8 unit tests pass (`npm test`), covering all six BitElevate labs, score bounds, and URL state encoding/decoding.
-- Result page renders instantly with zero external requests or framework bundle overhead.
-- Expected impact (to measure with analytics after launch): quiz completion rate, email capture rate, and click-through to BitElevate.
-
-## 6. Limitations & next steps
-- Leads are stored locally; production would POST to an API (Next.js route / serverless function + database + CRM webhook).
-- Scoring weights are heuristic; refine using real enrolment data.
-- Add analytics events and A/B test placement on the BitElevate page.
-
-## 7. Run locally
 ```bash
+# Run unit tests (8/8 passing)
 npm test
+
+# Serve locally
 npx serve .
 ```
