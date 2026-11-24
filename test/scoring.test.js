@@ -24,3 +24,5 @@ test("encode/decode roundtrip and invalid input", () => {
 
 test('QA answers rank QA lab first', () => { assert.strictEqual(score([3, 5, 0, 3, 2])[0].key, 'qa'); });
 test('AI answers rank AI lab first', () => { assert.strictEqual(score([2, 2, 3, 2, 1])[0].key, 'ai'); });
+test('Backend answers rank Python Backend lab first', () => { assert.strictEqual(score([0, 3, 2, 0, 1])[0].key, 'backend'); });
+test('Frontend answers rank Frontend Ops lab first', () => { assert.strictEqual(score([1, 4, 1, 5, 0])[0].key, 'frontend'); });

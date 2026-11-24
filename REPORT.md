@@ -40,7 +40,7 @@ I audited cynbit.in (home, `/bitelevate`, `/services`, `/careers`, `/contact`, `
 - Tests (`test/scoring.test.js`): ranking correctness, bounds, and `encode`/`decode` round-trip and invalid input.
 
 ## 5. Results
-- 6/6 unit tests pass (`npm test`).
+- 8/8 unit tests pass (`npm test`), covering all six BitElevate labs, score bounds, and URL state encoding/decoding.
 - Result page renders instantly with zero external requests or framework bundle overhead.
 - Expected impact (to measure with analytics after launch): quiz completion rate, email capture rate, and click-through to BitElevate.
 

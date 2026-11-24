@@ -20,7 +20,7 @@ p.sub { color:var(--mut); line-height:1.6; }
 .progress div { height:100%; background:linear-gradient(90deg,var(--acc),var(--acc2)); transition:width .3s; }
 .step { color:var(--mut); font-size:.85rem; margin-bottom:8px; }
 .opt { display:block; width:100%; text-align:left; background:transparent; border:1px solid var(--line); color:var(--txt); padding:15px 18px; border-radius:12px; margin-bottom:10px; font-size:1rem; cursor:pointer; transition:.15s; }
-.opt:hover { border-color:var(--acc); background:#1a2240; }
+.opt:hover, .opt.selected { border-color:var(--acc); background:#1a2240; }
 .row { display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; }
 .hero-icon { font-size:3rem; }
 .bar { margin:10px 0; font-size:.9rem; }
@@ -34,3 +34,6 @@ input { flex:1; min-width:200px; padding:13px; border-radius:12px; border:1px so
 .err { color:#ff8a8a; margin-top:10px; }
 hr { border:0; border-top:1px solid var(--line); margin:24px 0; }
 footer { text-align:center; color:var(--mut); font-size:.8rem; padding:24px; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); border:0; }
+@media (max-width: 520px) { .card { padding:22px; } }
+@media (prefers-reduced-motion: reduce) { .progress div, .bar .fill, .opt { transition:none; } }

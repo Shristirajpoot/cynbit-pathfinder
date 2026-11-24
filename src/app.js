@@ -22,7 +22,7 @@ function question(i) {
       <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${QUESTIONS.length}" aria-valuenow="${i}"><div style="width:${(i / QUESTIONS.length) * 100}%"></div></div>
       <div class="step">Question ${i + 1} of ${QUESTIONS.length}</div>
       <h2>${esc(q.q)}</h2>
-      ${q.options.map((o, idx) => `<button class="opt" data-i="${idx}">${esc(o.t)}</button>`).join("")}
+      ${q.options.map((o, idx) => `<button class="opt${answers[i] === idx ? " selected" : ""}" data-i="${idx}" aria-pressed="${answers[i] === idx}">${esc(o.t)}</button>`).join("")}
       ${i > 0 ? `<div class="row"><button class="btn ghost" id="back">← Back</button></div>` : ""}
     </section>`;
   app.querySelectorAll(".opt").forEach((b) => (b.onclick = () => {
@@ -43,7 +43,7 @@ function result(ans, pushUrl) {
 
   app.innerHTML = `
     <section class="card">
-      <div class="hero-icon">${top.icon}</div>
+      <div class="hero-icon" aria-hidden="true">${top.icon}</div>
       <div class="step">Your best match · ${ranked[0].pct}%</div>
       <h1><em>${esc(top.name)}</em></h1>
       <p class="sub">${esc(top.blurb)}</p>
@@ -57,7 +57,8 @@ function result(ans, pushUrl) {
       <h2>Not ready to pay yet? Talk to a mentor first</h2>
       <p class="sub">BitElevate is a 60-day sprint (₹1,499 via Cashfree). Get a free callback and syllabus for <strong>${esc(top.name)}</strong> before you commit.</p>
       <form id="lead" novalidate>
-        <input type="email" id="email" placeholder="you@example.com" aria-label="Email address" required />
+        <label class="sr-only" for="email">Email address</label>
+        <input type="email" id="email" placeholder="you@example.com" required />
         <button class="btn" type="submit">Request callback</button>
       </form>
       <div id="msg" role="status"></div>
@@ -68,7 +69,9 @@ function result(ans, pushUrl) {
       </div>
     </section>`;
 
-  requestAnimationFrame(() => app.querySelectorAll(".fill").forEach((f) => (f.style.width = f.dataset.w + "%")));
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => app.querySelectorAll(".fill").forEach((f) => (f.style.width = f.dataset.w + "%")))
+  );
 
   document.getElementById("retry").onclick = () => { history.replaceState(null, "", location.pathname); intro(); };
   document.getElementById("share").onclick = async (e) => {
@@ -80,9 +83,11 @@ function result(ans, pushUrl) {
     const email = document.getElementById("email").value.trim();
     const msg = document.getElementById("msg");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className = "err"; msg.textContent = "Please enter a valid email."; return; }
-    const leads = JSON.parse(localStorage.getItem("pf_leads") || "[]");
-    leads.push({ email, track: ranked[0].key, pct: ranked[0].pct, at: new Date().toISOString() });
-    localStorage.setItem("pf_leads", JSON.stringify(leads));
+    try {
+      const leads = JSON.parse(localStorage.getItem("pf_leads") || "[]");
+      leads.push({ email, track: ranked[0].key, pct: ranked[0].pct, at: new Date().toISOString() });
+      localStorage.setItem("pf_leads", JSON.stringify(leads));
+    } catch {}
     msg.className = "note"; msg.textContent = "Thanks! A Cynbit mentor will reach out (demo: stored locally).";
   };
 }
